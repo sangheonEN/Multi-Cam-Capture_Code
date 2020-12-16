@@ -1,4 +1,4 @@
-# 일반적인 Linear Regression
+# 1. 일반적인 Linear Regression
 # import tensorflow as tf
 # import os
 # os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
@@ -28,7 +28,7 @@
 #     if step % 20 == 0:
 #         print(step, sess.run(cost), sess.run(W), sess.run(b))
 
-# placeholder를 이용한 Linear Regression
+# 2. placeholder를 이용한 Linear Regression placeholder는 sess.run()할때 변수에 값을 feed_dict = 변수명 : 넣고 싶은 데이터 형식으로 넣을 수 있도록 변수를 초기화 하는 함수다.
 # import tensorflow as tf
 # import os
 # os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
@@ -64,3 +64,165 @@
 # # Testing Model
 # print(sess.run(hypothesis, feed_dict={X: [5]}))
 # print(sess.run(hypothesis, feed_dict={X: [2.5, 10.1]}))
+
+# 3. Cost(loss) Function의 최소화(최적화) W 변화에 따른 cost(W) 변화 값
+# import tensorflow as tf
+# import matplotlib.pyplot as plt
+#
+# X = [1, 2, 3]
+# Y = [1, 2, 3]
+#
+# # 가설의 모델링 Graph 그리기
+# # W 변수 정의
+# W = tf.placeholder(tf.float32)
+#
+# # 가설 정의 ()
+# hypothesis = W*X
+#
+# # cost function 정의
+# cost = tf.reduce_mean(tf.square(hypothesis - Y))
+#
+# # session run()
+# sess = tf.Session()
+# sess.run(tf.global_variables_initializer())
+#
+# # W와 cost에 대한 시각화
+# W_val = []
+# cost_val = []
+# for i in range(-30, 51):
+#     feed_W = i * 0.1
+#     curr_Cost, curr_W = sess.run([cost, W], feed_dict={W: feed_W})
+#     W_val.append(curr_W)
+#     cost_val.append(curr_Cost)
+#     print(f"step = {i}, W = {curr_W}, cost = {curr_Cost}")
+#
+# # 시각화 cost와 W
+# plt.plot(W_val, cost_val)
+# plt.show()
+
+# 4. Gradient Decent algorithm 적용.     tf.train.GradientDescentOptimizer(learning_rate = 0.1) 함수 안쓰고 구현 정확히 무엇을 최소화 시키는지 확인해보자.
+# import tensorflow as tf
+# import matplotlib.pyplot as plt
+# import os
+# os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
+#
+# x_data = [1, 2, 3]
+# y_data = [1, 2, 3]
+#
+# X = tf.placeholder(tf.float32)
+# Y = tf.placeholder(tf.float32)
+# W = tf.Variable(tf.random_normal([1]), name="weight")
+#
+# hypothesis = W * X
+#
+# cost = tf.reduce_mean(tf.square(W*X - Y))
+#
+# # optimizer --> 기울기 편차를 줄이면서 업데이트하는 것.
+# learning_rate = 0.1
+# gradient = tf.reduce_mean((W * X - Y) * X)
+# decent = W - learning_rate * gradient
+# update = W.assign(decent)
+# # tf.train.GradientDescentOptimizer(learning_rate = 0.1) 이 함수와 역할이 동일하다. 함수에 내포된 기능으로 미분을 해주어서 계산된다.
+#
+# # session()
+# sess = tf.Session()
+# sess.run(tf.global_variables_initializer())
+# for step in range(21):
+#     sess.run(update, feed_dict={X : x_data, Y : y_data})
+#     print(f"step : {step}, cost : {sess.run(cost, feed_dict={X : x_data, Y: y_data})}, W : {sess.run(W)}")
+
+# 5. W = -3으로 초기 값을 주었을 때 tf.train.GradientDescentOptimizer변화에 대한 cost() 변화 값
+# import tensorflow as tf
+# import matplotlib.pyplot as plt
+# import os
+# os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
+#
+# X = [1, 2, 3]
+# Y = [1, 2, 3]
+#
+# W = tf.Variable(-3.0)
+#
+# hypothesis = W * X
+#
+# cost = tf.reduce_mean(tf.square((W*X)-Y))
+#
+# optimizer = tf.train.GradientDescentOptimizer(learning_rate= 0.1) # Gradient Descent Optimizer 적용. W를 계속 업데이트하여서 줄여줌 기존 W - W 편미분한 값 반복
+# train = optimizer.minimize(cost)
+#
+# sess = tf.Session()
+# sess.run(tf.global_variables_initializer())
+#
+# for step in range(101):
+#     print(f"step = {step}, W = {sess.run(W)}")
+#     sess.run(train)
+
+# 6. W = 5으로 초기 값을 주었을 때 tf.train.GradientDescentOptimizer변화에 대한 cost() 변화 값
+# import tensorflow as tf
+# import matplotlib.pyplot as plt
+# import os
+# os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
+#
+# X = [1, 2, 3]
+# Y = [1, 2, 3]
+#
+# W = tf.Variable(5.0)
+#
+# hypothesis = W * X
+#
+# cost = tf.reduce_mean(tf.square(hypothesis - Y))
+#
+# optimizer = tf.train.GradientDescentOptimizer(learning_rate= 0.1)
+# train = optimizer.minimize(cost)
+#
+# sess = tf.Session()
+# sess.run(tf.global_variables_initializer())
+#
+# for step in range(101):
+#     print(f"step = {step}, W = {sess.run(W)}")
+#     sess.run(train)
+
+
+# 7. Optional : compute_gradient : optimizer 에 Gradient함수를 적용한 후 곧 바로 minimize하는 것이 아니라 그 시점의 cost에 맞는 Gradient를 계산한 값을 가지고 변경할 수 있다.
+# import tensorflow as tf
+# import os
+# os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
+#
+# X = [1, 2, 3]
+# Y = [1, 2, 3]
+#
+# W = tf.Variable(5.0, tf.float32)
+#
+# hypothesis = W * X
+#
+# gradient = tf.reduce_mean((W * X - Y) * X) * 2       # 수식으로 직접 계산한 Gradient
+#
+# cost = tf.reduce_mean(tf.square(hypothesis - Y))
+#
+# optimizer = tf.train.GradientDescentOptimizer(learning_rate= 0.1)   # 함수에서 자동으로 계산된 Gradient
+#
+# # cost 값 대비 해서 Gradient를 gvs에 할당해라.
+# # compute_gradient를 사용하면 자동으로 minimize되는 것 외로 사용자가 원하는 값으로 gradient를 변경하여 값을 줄 수 있다는 특징이 있다.
+# gvs = optimizer.compute_gradients(cost)
+# apply_gradient = optimizer.apply_gradients(gvs)
+#
+# sess = tf.Session()
+# sess.run(tf.global_variables_initializer())
+#
+# for step in range(101):
+#     print(f"step = {step}, Gradient = {sess.run(gradient)}, W = {sess.run(W)}, gvs = {sess.run(gvs)}, cost = {sess.run(cost)}")
+#     sess.run(apply_gradient)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
