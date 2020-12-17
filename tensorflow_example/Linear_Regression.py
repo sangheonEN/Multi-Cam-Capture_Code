@@ -28,7 +28,7 @@
 #     if step % 20 == 0:
 #         print(step, sess.run(cost), sess.run(W), sess.run(b))
 
-# 2. placeholder를 이용한 Linear Regression placeholder는 sess.run()할때 변수에 값을 feed_dict = 변수명 : 넣고 싶은 데이터 형식으로 넣을 수 있도록 변수를 초기화 하는 함수다.
+# 2. placeholder를 이용한 Linear Regression placeholder는 sess.run()할때 변수에 값을 feed_dict = 변수명 : 넣고 싶은 데이터(리스트형식) 형식으로 넣을 수 있도록 변수를 초기화 하는 함수다.
 # import tensorflow as tf
 # import os
 # os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
@@ -216,34 +216,34 @@
 # 8. 내가 원하는 데이터를 가지고 실습해보자.
 # 야구공을 10번 던져 구속에 따라 점수가 주어지고 그 결과는 총합으로 측정하는 게임이 있다. 야구 선수가 얼마나 게임에 적응해 가는지 생각해보고 만약 1 ~ 10번 게임을 참가했을 때 총합 점수가 있다면, 13번째에는 얼마의 총합 점수가 될 지 예측해보자.
 # X = 게임 경험 횟수 Y = 게임 회 당 총합 점수
-import tensorflow as tf
-import os
-os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
-
-X_data = [1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0]
-Y_data = [120.0, 130.0, 135.0, 140.0, 150.0, 160.0, 163.0, 170.0, 185.0, 200.0]
-
-W = tf.Variable(tf.random_normal([1]), name="Weight")
-b = tf.Variable(tf.random_normal([1]), name="bias")
-X = tf.placeholder(tf.float32, shape=[None])
-Y = tf.placeholder(tf.float32, shape=[None])
-
-hypothesis = W * X + b
-
-cost = tf.reduce_mean(tf.square(hypothesis - Y))
-
-optimizer = tf.train.GradientDescentOptimizer(learning_rate=0.1)
-train = optimizer.minimize(cost)
-
-sess = tf.Session()
-sess.run(tf.global_variables_initializer())
-
-for step in range(3001):
-    sess.run(train, feed_dict={X : X_data, Y : Y_data})
-    if step % 500 == 0:
-        print(f"step = {step}, W = {sess.run(W)}, b = {sess.run(b)}, cost = {sess.run(cost, feed_dict={X: X_data, Y : Y_data})}")
-print("13번째 점수의 총합은 {}".format(sess.run(hypothesis, feed_dict={X : 13})))
-
+# import tensorflow as tf
+# import os
+# os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
+#
+# X_data = [1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0]
+# Y_data = [120.0, 130.0, 135.0, 140.0, 150.0, 160.0, 163.0, 170.0, 185.0, 200.0]
+#
+# W = tf.Variable(tf.random_normal([1]), name="Weight")
+# b = tf.Variable(tf.random_normal([1]), name="bias")
+# X = tf.placeholder(tf.float32, shape=[None])
+# Y = tf.placeholder(tf.float32, shape=[None])
+#
+# hypothesis = W * X + b
+#
+# cost = tf.reduce_mean(tf.square(hypothesis - Y))
+#
+# optimizer = tf.train.GradientDescentOptimizer(learning_rate=0.01)
+# train = optimizer.minimize(cost)
+#
+# sess = tf.Session()
+# sess.run(tf.global_variables_initializer())
+#
+# for step in range(5001):
+#     sess.run(train, feed_dict={X : X_data, Y : Y_data})
+#     if step % 500 == 0:
+#         print(f"step = {step}, W = {sess.run(W)}, b = {sess.run(b)}, cost = {sess.run(cost, feed_dict={X: X_data, Y : Y_data})}")
+# print(sess.run(hypothesis, feed_dict={X : [13]}))
+# 습득교훈 : learning_rate = 0.1 설정하니 학습이 되지 않았다. 하여, learning_rate에 대한 것도 공부해보자.
 
 
 
