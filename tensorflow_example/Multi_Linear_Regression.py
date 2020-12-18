@@ -115,55 +115,55 @@
 # print(f"My Score x1 : 100, x2 :70, x3 : 80 \nFinal Score : {sess.run(hypothesis, feed_dict={X : [[100, 70, 80]]})}")
 
 # csv File 불러오기
-import tensorflow as tf
-import numpy as np
-import os
-os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
-
-filename_queue = tf.train.string_input_producer(
-    ['data-01-test-score.csv'], shuffle=False, name='filename_queue'  # queue에 csv파일을 저장
-)
-
-reader = tf.TextLineReader()
-key, value = reader.read(filename_queue)
-
-record_default = [[0.], [0.], [0.], [0.]]                     # csv의 각각의 데이터 type 설정 float
-xy = tf.decode_csv(value, record_defaults=record_default)     # csv로 디코더
-
-train_x_batch, train_y_batch = tf.train.batch([xy[0:3], xy[3:4]], batch_size=10)
-
-# X_data = array[:, 0:-1]
-# Y_data = array[:, [-1]]
-# print("x = ", train_x_batch.shape,"\n",train_x_batch,"\n",len(train_x_batch))
-# print("y = ", train_y_batch.shape,"\n", train_y_batch,"\n",len(train_y_batch))
-
-X = tf.placeholder(tf.float32, shape=[None, 3])       # shape[행의 수, 열의 수]
-Y = tf.placeholder(tf.float32, shape=[None, 1])
-W = tf.Variable(tf.random_normal([3, 1]), name="Weight")             # X * W = Y     ->     5,3 * 3,1 = 5,1
-b = tf.Variable(tf.random_normal([1]), name="bias")
-
-
-hypothesis = tf.matmul(X, W) + b                                # Multi Linear Regression 함수 = tf.matmul(X, W)
-
-cost = tf.reduce_mean(tf.square(hypothesis - Y))
-
-optimizer = tf.train.GradientDescentOptimizer(learning_rate= 1e-5)
-train = optimizer.minimize(cost)
-
-sess = tf.Session()
-sess.run(tf.global_variables_initializer())
-
-coord = tf.train.Coordinator()
-threads = tf.train.start_queue_runners(sess=sess, coord=coord)
-
-for step in range(3001):
-    x_batch, y_batch = sess.run([train_x_batch, train_y_batch])
-    cost_val, hypothesis_val, train_val = sess.run([cost, hypothesis, train], feed_dict={X : x_batch, Y : y_batch})
-    if step % 200 == 0:
-        print(f"step: {step}, cost = {cost_val}, \n 예측 값 = {hypothesis_val}")
-print(f"My Score x1 : 100, x2 :70, x3 : 80 \nFinal Score : {sess.run(hypothesis, feed_dict={X : [[100, 70, 80]]})}")
-
-coord.request_stop()
-coord.join(threads)
+# import tensorflow as tf
+# import numpy as np
+# import os
+# os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
+#
+# filename_queue = tf.train.string_input_producer(
+#     ['data-01-test-score.csv'], shuffle=False, name='filename_queue'  # queue에 csv파일을 저장
+# )
+#
+# reader = tf.TextLineReader()
+# key, value = reader.read(filename_queue)
+#
+# record_default = [[0.], [0.], [0.], [0.]]                     # csv의 각각의 데이터 type 설정 float
+# xy = tf.decode_csv(value, record_defaults=record_default)     # csv로 디코더
+#
+# train_x_batch, train_y_batch = tf.train.batch([xy[0:3], xy[3:4]], batch_size=10)
+#
+# # X_data = array[:, 0:-1]
+# # Y_data = array[:, [-1]]
+# # print("x = ", train_x_batch.shape,"\n",train_x_batch,"\n",len(train_x_batch))
+# # print("y = ", train_y_batch.shape,"\n", train_y_batch,"\n",len(train_y_batch))
+#
+# X = tf.placeholder(tf.float32, shape=[None, 3])       # shape[행의 수, 열의 수]
+# Y = tf.placeholder(tf.float32, shape=[None, 1])
+# W = tf.Variable(tf.random_normal([3, 1]), name="Weight")             # X * W = Y     ->     5,3 * 3,1 = 5,1
+# b = tf.Variable(tf.random_normal([1]), name="bias")
+#
+#
+# hypothesis = tf.matmul(X, W) + b                                # Multi Linear Regression 함수 = tf.matmul(X, W)
+#
+# cost = tf.reduce_mean(tf.square(hypothesis - Y))
+#
+# optimizer = tf.train.GradientDescentOptimizer(learning_rate= 1e-5)
+# train = optimizer.minimize(cost)
+#
+# sess = tf.Session()
+# sess.run(tf.global_variables_initializer())
+#
+# coord = tf.train.Coordinator()
+# threads = tf.train.start_queue_runners(sess=sess, coord=coord)
+#
+# for step in range(3001):
+#     x_batch, y_batch = sess.run([train_x_batch, train_y_batch])
+#     cost_val, hypothesis_val, train_val = sess.run([cost, hypothesis, train], feed_dict={X : x_batch, Y : y_batch})
+#     if step % 200 == 0:
+#         print(f"step: {step}, cost = {cost_val}, \n 예측 값 = {hypothesis_val}")
+# print(f"My Score x1 : 100, x2 :70, x3 : 80 \nFinal Score : {sess.run(hypothesis, feed_dict={X : [[100, 70, 80]]})}")
+#
+# coord.request_stop()
+# coord.join(threads)
 
 
