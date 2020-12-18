@@ -1,0 +1,51 @@
+tensorflow 기본적인 사용법과 회귀분석에 대한 동영상 업로드하자.
+
+tenserflow 1.5.0 버젼으로 회귀 분석 실시
+
+기본적인 사용법 : https://tensorflowkorea.gitbooks.io/tensorflow-kr/content/g3doc/get_started/basic_usage.html
+
+PT 구성
+
+1. TENSORFLOW 설명 및 기본적인 사용법
+
+2. TENSORFLOW 회귀분석 기본 구문
+    - 머신 러닝이란? 실제 데이터를 모델링한 모델에 입력 값으로 넣었을 때, 어떤 출력 값을 예측 하는 것에 있다. 
+    - 선형 회귀 분석이란? 우리가 찾을 수 있는 가장 직관적인 모델은 1차 함수적인 모델 즉, 선이다. 따라서 선형 회귀의 목적은 입력된 데이터를 학습하여 그 데이터를 가장 잘 설명할 수 있는 선을 찾는 것이다. 
+    - 평균 제곱 오차? 실제 데이터와 가설로 설정된 예측 데이터의 차이를 제곱한 값을 평균한 값으로 제곱 오차들의 평균이다. 따라서, 선형 회귀에서는 이를 최소화 시켜주는 최적의 Gradient와 Y절편(bias)를 찾는 것이다.   
+    - 손실 함수? 신경망을 학습할 때 학습 상태에 대해 측정하는 지표중의 하나이다. 신경망의 가중치 매개변수들이 스스로 특징을 찾아가기에 이 가중치 값을 최적이 될 수 있도록 해야 하며 잘 찾아가고 있는지 볼 때 손실함수를 보는 것이다.
+    - 전체적인 모듈화 Process, 절차 설명   (변수 설정, 가설 설정, cost(loss) function정의, 학습 적용(tf.train.GradientDescentOptimizer(learning_rate = 0.1)), Session() 정의, 학습 범위 설정)
+    - 실습
+    - 습득교훈 및 Q&A
+
+3. TENSORFLOW 회귀분석 Gradient decent algorithm 설명
+    - Gradient decent algorithm이 뭔지?
+    - 실습
+    - 습득교훈 및 Q&A
+
+
+- 이해안가는것
+1. sess
+   - session()의 역할
+	1) Session은 graph의 작업(op)(역자 주: operation. graph를 구성하는 노드)을 CPU나 GPU같은 Device에 배정하고 실행을 위한 메서드들을 제공합니다. 
+	2) 이런 메서드들은 작업(op)을 실행해서 tensor를 만들어 냅니다. 
+	3) tensor는 파이썬에서 numpy ndarray 형식으로 출력됨.
+	* (ndarray : NumPy에서 가장 강력한 무기로 칭송받고 있는 N차원의 배열 객체. ndarray는 기존 파이썬과는 다르게 오직 같은 종류의 데이터만을 배열에 담을 수 있다.)
+   - sess.run(변수, feed_dict={})의 역할
+	1) placeholder()로 선언된 변수는 sess.run() 함수에서 feed_dict = {변수명 : 넣고 싶은 데이터} 변수를 사용해서 딕셔너리 자료형으로 변수에 원하는 데이터를 넣을 수 있다.
+
+2. 그래서, 이 잘난 Gradient를 어떤 이유에서 계속해서 구하고, 구하고, 구하는 것이냐? 
+
+   - 어떤 함수의 최소 혹은 최대값을 구하기 위해서! Optimization function을 만들고 이의 최대 혹은 최소를 구하기 위해 gradient를 계산한다. 
+
+   - 머신러닝의 거의 모든 부분에 사용되는 개념이다. 
+
+   - 위와 같은 쉬운 수식에서는 x=y=0 에서 최소를 갖는다는 것이 직관적으로 보이지만 복잡한 함수에서는 이를 직관적으로 찾는 것은 불가능하다. 
+     따라서 최소값을 찾는 알고리즘 Gradient Descending을 소개한다.
+
+3. Learning rate 설정하는 방법
+   - cost를 최소화 하기 위한 gradient descent algorithm을 구현하는 과정에서 learning rate의 개념을 배웠다. 
+   - learning rate란? cost값의 미분한 값에 알파(a)를 곱하게 된다. 이 값이 learning_rate이고 어느정도 크기로 기울기가 줄어드는 지점으로 이동하겠는가를 나타내는 지표이다.
+   - 기존 데이터에 0.1이나 0.01등의 값을 주어 어느정도 영향을 미치므로 은유적으로 학습 속도로 표현하는 것이다. (진짜 학습속도가 아님.)
+   - 뉴럴넷을 학습시킨다는 것은 쉽게 생각하면 parameter인 가중치(weight)를 업데이트 하는 것이고,
+   - 반면에 Hyper-parameter에는 learning rate, epoch, 등등의 메타레벨의 변수가 있어요. 
+   - 이런 변수를 잘 조절해야 학습도 잘 되는거죠. 그래서 여러번의 시도를 통해서 이런 메타레벨의 변수를 찾는거에요.
