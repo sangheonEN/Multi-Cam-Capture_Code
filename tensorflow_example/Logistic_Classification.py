@@ -15,6 +15,8 @@
 # # tf.div(1., 1. + tf.exp(tf.matmul(X, W) + b))
 # hypothesis = tf.sigmoid(tf.matmul(X, W) + b)
 #
+# test = tf.matmul(X, W)
+#
 # cost = -tf.reduce_mean(Y * tf.log(hypothesis)+(1-Y)*tf.log(1-hypothesis))
 #
 # optimizer = tf.train.GradientDescentOptimizer(learning_rate=0.01)
@@ -32,11 +34,14 @@
 #
 #     for step in range(10001):
 #         cost_val, train_val = sess.run([cost, train], feed_dict={X: X_Data, Y : Y_Data})
+#         test_val = sess.run([test], feed_dict={X:X_Data})
 #         if step % 200 == 0:
 #             print(f"step = {step}, cost = {cost_val}")
+#             print("test_data = ", test_val)
 #     # 가설 값, 가설을 기반한 실제 값, 정확도 출력
 #     h, p, a = sess.run([hypothesis, predicted, accuracy], feed_dict={X:X_Data, Y:Y_Data})
 #     print(f"hypothesis = {h}, predicted = {p}, accuracy = {a}")
+
 
 # 실제 예제인 당뇨병을 앓고 있는 사람과 아닌 사람의 기초 의료 데이터이다. 제시된 parameter를 통해 내 환자가 당뇨병에 걸렸을 지 안 걸렸을 지 테스트를 해보는 실습을 해보자. file = data-03-diabetes.csv
 # import tensorflow as tf
@@ -75,9 +80,9 @@
 #     print(f"""if I spec is x1 = -0.129333, x2 = 0.577333, x3 = 0.172733, x4 = -0.99999, x5 = 0, x6 = 0.122, x7 = -0.033, x8 = -0.77
 #                 \n hypothesis = {sess.run(hypothesis, feed_dict={X : [[-0.129333, 0.577333, 0.172733, -0.999999, 0., 0.1222, -0.033, -0.7777]]})}
 #                 \n result = {sess.run(predicted, feed_dict={X : [[-0.129333, 0.577333, 0.172733, -0.999999, 0., 0.1222, -0.033, -0.7777]]})}""")
-
-
-
+#
+#
+#
 
 
 
