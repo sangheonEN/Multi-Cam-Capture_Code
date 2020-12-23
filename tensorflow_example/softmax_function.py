@@ -162,10 +162,12 @@ import numpy as np
 import os
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 
+# np.loadtxt('파일명', delimiter=?, dtype=np.float32) 구분자 ,를 기준으로 csv 파일을 load 한다.
 xy = np.loadtxt('data-04-zoo.csv', delimiter=',', dtype=np.float32)
 x_data = xy[:, 0:16]
 y_data = xy[:, 16:17]
 
+# X, Y는 placeholder(tf.float32, shape=[None, 16])         # X, Y를 shape=[]
 X = tf.placeholder(tf.float32, shape=[None, 16])
 Y = tf.placeholder(tf.int32, shape=[None, 1])
 
@@ -203,6 +205,10 @@ with tf.Session() as sess:
     pred = sess.run(prediction, feed_dict={X: x_data})
     for p, y in zip(pred, y_data.flatten()):
         print(f"result = {p == int(y)}, pred = {p}, Y = {y}")
+
+x = np.array(x_data)
+y = np.array(y_data)
+print(x.shape,"\n", y.shape)
 
 
 

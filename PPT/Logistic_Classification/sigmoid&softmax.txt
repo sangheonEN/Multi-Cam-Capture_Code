@@ -1,0 +1,8 @@
+Logistic - H(x) -> sigmoid function(지수 사용)을 통해 0 ~ 1사이의 값으로 변환한다.
+          - cost Function -> y = 1 or y = 0 실제 값을 기준으로, 그래프를 구분하여 Log화하여 Gradient Descent Algorithm을 사용할 때 지수로 인해 그래프가 구불구불한 것을 보완해준다.
+
+multi classification - H(x) -> softmax function(지수 사용)을 통해 0~1사이의 값을 가지고 각각의 값을 더하면 1로 만들어주는 확률화를 시켜줌.
+                        - cost -> 실제값 * log(H(x))를 해주어서 똑같이 그래프가 구불구불한 것을 보완해줌.
+
+
+
