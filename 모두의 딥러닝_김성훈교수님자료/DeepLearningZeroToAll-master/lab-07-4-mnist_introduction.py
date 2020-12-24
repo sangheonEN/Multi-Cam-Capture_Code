@@ -46,6 +46,7 @@ with tf.Session() as sess:
 
         for i in range(num_iterations):
             batch_xs, batch_ys = mnist.train.next_batch(batch_size)
+            # print(f"batch_xs = {batch_ys}")
             _, cost_val = sess.run([train, cost], feed_dict={X: batch_xs, Y: batch_ys})
             avg_cost += cost_val / num_iterations
 
