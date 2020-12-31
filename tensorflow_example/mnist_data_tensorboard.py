@@ -10,48 +10,50 @@ from tensorflow.examples.tutorials.mnist import input_data
 mnist = input_data.read_data_sets("MNIST_data/", one_hot=True)
 
 # Layer & Variable Definition
-num_calss = 10
+
 with tf.name_scope("Layer1"):
     X_DATA = tf.placeholder(tf.float32, shape=[None, 784])
-    Y_DATA = tf.placeholder(tf.float32, shape=[None, num_calss])
-    W1 = tf.Variable(tf.random_normal([784, num_calss]), name="weight1")
-    b1 = tf.Variable(tf.random_normal([num_calss]), name="bias1")
+    Y_DATA = tf.placeholder(tf.float32, shape=[None, 10])
+    W1 = tf.Variable(tf.random_normal([784, 256]), name="weight1")
+    b1 = tf.Variable(tf.random_normal([256]), name="bias1")
     logits1 = tf.matmul(X_DATA, W1)+b1
-    hypothesis = tf.nn.softmax(logits1)
+    layer1 = tf.nn.softmax(logits1)
     # tensorboard summary
     tf.summary.histogram("W1", W1)
     tf.summary.histogram("b1", b1)
-    tf.summary.histogram("Layer1", hypothesis)
+    tf.summary.histogram("Layer1", layer1)
 
-# with tf.name_scope("Layer2"):
-#     W2 = tf.Variable(tf.random_normal([784, 784]), name="weight2")
-#     b2 = tf.Variable(tf.random_normal([784]), name="bias2")
-#     logits2 = tf.matmul(layer1, W2)+b2
-#     layer2 = tf.nn.softmax(logits2)
-#     # tensorboard summary
-#     tf.summary.histogram("W2", W2)
-#     tf.summary.histogram("b2", b2)
-#     tf.summary.histogram("Layer2", layer2)
-#
-# with tf.name_scope("Layer3"):
-#     W3 = tf.Variable(tf.random_normal([784, num_calss]), name="weight3")
-#     b3 = tf.Variable(tf.random_normal([num_calss]), name="bias3")
-#     logits3 = tf.matmul(layer2, W3)+b3
-#     # hypothesis definition
-#     hypothesis = tf.nn.softmax(logits3)
-#     # tensorboard summary
-#     tf.summary.histogram("W3", W3)
-#     tf.summary.histogram("b3", b3)
-#     tf.summary.histogram("final layer, hypothesis", hypothesis)
+with tf.name_scope("Layer2"):
+    W2 = tf.Variable(tf.random_normal([256, 50]), name="weight2")
+    b2 = tf.Variable(tf.random_normal([50]), name="bias2")
+    logits2 = tf.matmul(layer1, W2)+b2
+    layer2 = tf.nn.softmax(logits2)
+    # tensorboard summary
+    tf.summary.histogram("W2", W2)
+    tf.summary.histogram("b2", b2)
+    tf.summary.histogram("Layer2", layer2)
+
+with tf.name_scope("Layer3"):
+    num_calss = 10
+    W3 = tf.Variable(tf.random_normal([50, num_calss]), name="weight3")
+    b3 = tf.Variable(tf.random_normal([num_calss]), name="bias3")
+    logits3 = tf.matmul(layer2, W3)+b3
+    # hypothesis definition
+    hypothesis = tf.nn.softmax(logits3)
+    # tensorboard summary
+    tf.summary.histogram("W3", W3)
+    tf.summary.histogram("b3", b3)
+    tf.summary.histogram("final layer, hypothesis", hypothesis)
 
 # cost function definition
 with tf.name_scope("Cost"):
-    cost_i = tf.nn.softmax_cross_entropy_with_logits(logits=logits1, labels=Y_DATA)
+    cost_i = tf.nn.softmax_cross_entropy_with_logits(logits=hypothesis, labels=Y_DATA)
     cost = tf.reduce_mean(cost_i)
+    tf.summary.scalar("accuracy", cost)
 
 # train method
 with tf.name_scope("Train"):
-    optimizer = tf.train.GradientDescentOptimizer(learning_rate=0.01)
+    optimizer = tf.train.GradientDescentOptimizer(learning_rate=0.1)
     train = optimizer.minimize(cost)
 
 # predicted & accuracy definition if) H(x) argmax and Y argmax result compare True False
@@ -63,7 +65,7 @@ tf.summary.scalar("accuracy", accuracy)
 # epoch, batch definition
 epoch_num = 20
 batch_size = 100
-num_iterations = int(mnist.train.num_examples / batch_size)
+total_batch = int(mnist.train.num_examples / batch_size)
 
 # session
 with tf.Session() as sess:
@@ -76,7 +78,7 @@ with tf.Session() as sess:
     sess.run(tf.global_variables_initializer())
 
     for epoch in range(epoch_num):
-        for i in range(num_iterations):
+        for i in range(total_batch):
             batch_x, batch_y = mnist.train.next_batch(batch_size)
             cost_val, train_val, summary_val = sess.run([cost, train, merge_summary], feed_dict={X_DATA : batch_x, Y_DATA : batch_y})
             write.add_summary(summary_val, global_step=i)
