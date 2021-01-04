@@ -13,21 +13,32 @@ mnist = input_data.read_data_sets("MNIST_data/", one_hot=True)
 X = tf.placeholder(tf.float32, shape=[None, 784])
 Y = tf.placeholder(tf.float32, shape=[None, 10])
 
-W1 = tf.Variable(tf.random_normal([784, 256]))
-b1 = tf.Variable(tf.random_normal([256]))
+# drop_out rate 0.7 on training, but should be 1 for testing
+keep_prob = tf.placeholder(tf.float32)
+
+W1 = tf.get_variable("w1", shape=[784, 512], initializer=tf.contrib.layers.xavier_initializer())
+b1 = tf.Variable(tf.random_normal([512]))
 layer1 = tf.nn.relu(tf.matmul(X, W1)+b1)
+layer1 = tf.nn.dropout(layer1, keep_prob=keep_prob)
 
-W2 = tf.Variable(tf.random_normal([256, 256]))
-b2 = tf.Variable(tf.random_normal([256]))
+W2 = tf.get_variable("w2", shape=[512, 512], initializer=tf.contrib.layers.xavier_initializer())
+b2 = tf.Variable(tf.random_normal([512]))
 layer2 = tf.nn.relu(tf.matmul(layer1, W2)+b2)
+layer2 = tf.nn.dropout(layer2, keep_prob=keep_prob)
 
-W3 = tf.Variable(tf.random_normal([256, 128]))
-b3 = tf.Variable(tf.random_normal([128]))
+W3 = tf.get_variable("w3", shape=[512, 512], initializer=tf.contrib.layers.xavier_initializer())
+b3 = tf.Variable(tf.random_normal([512]))
 layer3 = tf.nn.relu(tf.matmul(layer2, W3)+b3)
+layer3 = tf.nn.dropout(layer3, keep_prob=keep_prob)
 
-W4 = tf.Variable(tf.random_normal([128, 10]))
-b4 = tf.Variable(tf.random_normal([10]))
-hypothesis = tf.matmul(layer3, W4)+b4                         # hypothesis
+W4 = tf.get_variable("w4", shape=[512, 128], initializer=tf.contrib.layers.xavier_initializer())
+b4 = tf.Variable(tf.random_normal([128]))
+layer4 = tf.nn.relu(tf.matmul(layer3, W4)+b4)
+layer4 = tf.nn.dropout(layer4, keep_prob=keep_prob)
+
+W5 = tf.get_variable("w5", shape=[128, 10], initializer=tf.contrib.layers.xavier_initializer())
+b5 = tf.Variable(tf.random_normal([10]))
+hypothesis = tf.matmul(layer4, W5)+b5
 
 # cost Function definition
 cost = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(logits= hypothesis, labels=Y))
@@ -53,23 +64,23 @@ with tf.Session() as sess:
         cost_avg = 0
         for i in range(iterations):
             batch_x, batch_y = mnist.train.next_batch(batch_size)
-            cost_val, train_val = sess.run([cost, train], feed_dict={X:batch_x, Y: batch_y})
+            cost_val, train_val = sess.run([cost, train], feed_dict={X:batch_x, Y: batch_y, keep_prob:0.7})
             cost_avg += cost_val/iterations
         print(f"epoch : {epoch}, cost : {cost_avg}")
     print("learning finish")
 
     # Accuracy
-    p, a = sess.run([predict, accuracy], feed_dict={X: mnist.test.images, Y:mnist.test.labels})
+    p, a = sess.run([predict, accuracy], feed_dict={X: mnist.test.images, Y:mnist.test.labels, keep_prob:1})
     print(f"accuracy = {a}")
 
     # Predict 1 data Verification
     r = random.randint(0, mnist.test.num_examples - 1)
     print(f"label = {sess.run(tf.argmax(mnist.test.labels[r : r+1],1))}")
-    print(f"prediction = {sess.run(tf.argmax(hypothesis, 1), feed_dict={X:mnist.test.images[r:r+1]})}")
+    print(f"prediction = {sess.run(tf.argmax(hypothesis, 1), feed_dict={X:mnist.test.images[r:r+1],keep_prob:1})}")
 
-    plt.show(
-        mnist.test.images[r:r+1].reshape(28, 28),
-        cmap='Greys',
-        interpolation = 'nearest'
-    )
-    plt.show()
+    # plt.show(
+    #     mnist.test.images[r:r+1].reshape(28, 28),
+    #     cmap='Greys',
+    #     interpolation = 'nearest'
+    # )
+    # plt.show()
