@@ -10,10 +10,17 @@ x_test = x_test / 255
 x_train = x_train / 255
 x_train = x_train.reshape(x_train.shape[0], 28, 28, 1)
 x_test = x_test.reshape(x_test.shape[0], 28, 28, 1)
+print(x_train.shape)
+print(x_test.shape)
 
 # one hot encode y data
 y_train = tf.keras.utils.to_categorical(y_train, 10)
 y_test = tf.keras.utils.to_categorical(y_test, 10)
+
+print(y_train.shape)
+print(y_test.shape)
+print(x_train.shape)
+print(x_test.shape)
 
 # hyper parameters
 learning_rate = 0.001
@@ -35,7 +42,9 @@ tf.model.add(tf.keras.layers.Dense(units=10, kernel_initializer='glorot_normal',
 
 tf.model.compile(loss='categorical_crossentropy', optimizer=tf.keras.optimizers.Adam(lr=learning_rate), metrics=['accuracy'])
 tf.model.summary()
-
+print("fffffffffffffffffffffffffffffffffffffffff")
+print(x_train.shape)
+print(y_train.shape)
 tf.model.fit(x_train, y_train, batch_size=batch_size, epochs=training_epochs)
 
 # predict 10 random hand-writing data

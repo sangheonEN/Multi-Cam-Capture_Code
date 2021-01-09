@@ -25,6 +25,7 @@ X_img = tf.reshape(X, [-1, 28, 28, 1])
 
 # filter (weight) definition
 # layer1
+# 32개의 filter를 만든다. 3*3 filter가 32개
 W1 = tf.Variable(tf.random_normal([3, 3, 1, 32], stddev=0.01))
 
 L1 = tf.nn.conv2d(X_img, W1, strides=[1, 1, 1, 1], padding="SAME")
