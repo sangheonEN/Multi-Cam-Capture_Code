@@ -29,16 +29,16 @@ class Model:
             self.keep_porb = tf.placeholder(tf.float32)
 
             # Input data placeholder
-            self.X = tf.placeholder(tf.float32, shape=[None, 784])
-            X_img = tf.reshape(self.X, [-1, 28, 28, 1])
-            self.Y = tf.placeholder(tf.float32, shape=[None, 10])
+            self.X = tf.placeholder(tf.float32, shape=[None, 784])              # Image 총 픽셀 데이터의 수
+            X_img = tf.reshape(self.X, [-1, 28, 28, 1])                         # [-1, 28, 28, 1] --> -1 = N개 데이터 ,28*28 Scale, 1차원 Gray
+            self.Y = tf.placeholder(tf.float32, shape=[None, 10])               # Y 라벨의 수 (Class의 수 내가 구별하고자 하는 수)
 
             # 32 개의 conv를 만들기 위해 filter의 갯수를 32개로 하고, Gray scale.
-            W1 = tf.Variable(tf.random_normal([3, 3, 1, 32], stddev=0.01))
-            L1 = tf.nn.conv2d(X_img, W1, strides=[1,1,1,1], padding="SAME")
+            W1 = tf.Variable(tf.random_normal([3, 3, 1, 32], stddev=0.01))      # 32개의 filter 사용하고 싶다.
+            L1 = tf.nn.conv2d(X_img, W1, strides=[1,1,1,1], padding="SAME")     # strides 1*1 이면 입력의 이미지 Scale과 같다 즉 출력 값은 28*28, 그리고 Filter 수 32개 만큼 생성됨. 
             print(f"L1 conv shape = {L1.shape}")
-            L1 = tf.nn.relu(L1)
-            L1 = tf.nn.max_pool(L1, ksize=[1, 2, 2, 1], strides=[1,2,2,1], padding="SAME")
+            L1 = tf.nn.relu(L1)                                                 # relu함수 적용
+            L1 = tf.nn.max_pool(L1, ksize=[1, 2, 2, 1], strides=[1,2,2,1], padding="SAME") # channel 2*2 size와 strides 2*2 사이즈로 MaxPooling Kernel 사이즈 2*2
             print(f"L1 max_pool shape = {L1.shape}")
             L1 = tf.nn.dropout(L1, keep_prob=self.keep_porb)
 
@@ -88,8 +88,14 @@ class Model:
 
 # model train start
 with tf.Session() as sess:
+    # How many using models? define  --> 7 models
+    models = []
+    num_modles = 7
+    # model list allocation 1~7
+    for m in range(num_modles):
+        models.append(Model(sess, "model"+ str(m)))
+
     sess = tf.Session()
-    m1 = Model(sess, "M1")
     sess.run(tf.global_variables_initializer())
     print("train start")
     for epoch in range(train_epoch):
