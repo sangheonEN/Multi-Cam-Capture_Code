@@ -37,11 +37,12 @@ class Model:
             W1 = tf.Variable(tf.random_normal([3, 3, 1, 32], stddev=0.01))      # 32개의 filter 사용하고 싶다.
             L1 = tf.nn.conv2d(X_img, W1, strides=[1,1,1,1], padding="SAME")     # strides 1*1 이면 입력의 이미지 Scale과 같다 즉 출력 값은 28*28, 그리고 Filter 수 32개 만큼 생성됨. 
             print(f"L1 conv shape = {L1.shape}")
-            L1 = tf.nn.relu(L1)                                                 # relu함수 적용
+            L1 = tf.nn.relu(L1)# relu함수 적용
             L1 = tf.nn.max_pool(L1, ksize=[1, 2, 2, 1], strides=[1,2,2,1], padding="SAME") # channel 2*2 size와 strides 2*2 사이즈로 MaxPooling Kernel 사이즈 2*2
             print(f"L1 max_pool shape = {L1.shape}")
             L1 = tf.nn.dropout(L1, keep_prob=self.keep_porb)
 
+            tf.nn.max_pool3d
             # L2 INPUT LAYER [?, 14, 14 32]
             W2 = tf.Variable(tf.random_normal([3,3,32,64], stddev=0.01))
             L2 = tf.nn.conv2d(L1, W2, strides=[1,1,1,1], padding="SAME")
