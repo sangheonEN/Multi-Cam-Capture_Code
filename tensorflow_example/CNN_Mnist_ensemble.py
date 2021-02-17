@@ -95,22 +95,35 @@ with tf.Session() as sess:
     # model list allocation 1~7
     for m in range(num_modles):
         models.append(Model(sess, "model"+ str(m)))
-
     sess = tf.Session()
     sess.run(tf.global_variables_initializer())
     print("train start")
+
     for epoch in range(train_epoch):
-        cost_avg = 0
+        # 모델이 들어간 list의 개수만큼 배열을 할당
+        cost_list = np.zeros(len(models))
         iterlation = int(mnist.train.num_examples / batch_size)
         for i in range(iterlation):
             batch_x, batch_y = mnist.train.next_batch(batch_size)
-            cost_val, train_val = m1.train_start(batch_x, batch_y)
-            cost_avg += cost_val / iterlation
-        print(f"epoch : {epoch}, cost : {cost_avg}")
+            for m_idx, m in enumerate(models):
+                cost_val, train_val = m.train_start(batch_x, batch_y)
+                # 학습 후 cost 값을 각 model별 cost 리스트 배열에 할당
+                cost_list[m_idx] += cost_val / iterlation
+        print(f"epoch : {epoch+1}, cost : {cost_list}")
     print("Learning Finish")
 
-    # Accuracy result
-    print(f"Accuracy : {m1.get_accuracy(mnist.test.images, mnist.test.labels)}")
+    # Accuracy & Predictions result
+    test_size = len(mnist.test.labels)
+    predictions = np.zeros(test_size * 10).reshape(test_size, 10)
+    for m_idx, m in enumerate(models):
+        print(m_idx, "Accuracy : ", m.get_accuracy(mnist.test.images, mnist.test.labels))
+        p = m.prediction(mnist.test.images)
+        predictions += p
+
+    # ensemble 앙상블 해서 합친다. 모든 모델을 더해서 가장 큰 값을 가지는 label로 테스트를 한다.
+    ensemble_correct_prediction = tf.equal(tf.argmax(predictions, 1), tf.argmax(mnist.test.labels, 1))
+    ensemble_accuracy = tf.reduce_mean(tf.cast(ensemble_correct_prediction, tf.float32))
+    print(f"Ensemble accuracy : {sess.run(ensemble_accuracy)}")
 
 
 
