@@ -94,7 +94,7 @@ with tf.Session() as sess:
     num_modles = 7
     # model list allocation 1~7
     for m in range(num_modles):
-        models.append(Model(sess, "model"+ str(m)))
+        models.append(Model(sess, "model"+str(m)))
     sess = tf.Session()
     sess.run(tf.global_variables_initializer())
     print("train start")
