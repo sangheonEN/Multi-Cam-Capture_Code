@@ -11,7 +11,8 @@ class man:
             print(f"bye!! {self.model}")
 
 # 생성자 정의
-m = man("aa", "A모델")
+m = man("aa", "m1")
+
 m.hello()
 m.goodbye(10)
 
