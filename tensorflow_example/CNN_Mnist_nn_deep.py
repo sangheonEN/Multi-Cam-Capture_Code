@@ -17,7 +17,6 @@ learning_rate = 0.001
 train_epoch = 15
 batch_size = 100
 
-
 # X_data, Y_data, Weight, drop-out, keep_prob layer definition
 keep_prob = tf.placeholder(tf.float32)
 X = tf.placeholder(tf.float32, shape=[None, 784])
