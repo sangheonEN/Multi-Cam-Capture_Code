@@ -105,6 +105,9 @@ writer = tf.summary.FileWriter(TB_SUMMARY_DIR)
 writer.add_graph(sess.graph)
 global_step = 0
 
+# saver
+saver = tf.train.Saver()
+
 print('Start learning!')
 
 # train my model
@@ -120,6 +123,8 @@ for epoch in range(training_epochs):
         global_step += 1
 
         avg_cost += sess.run(cost, feed_dict=feed_dict) / total_batch
+
+    saver.save(sess, "./tb/model.ckpt", global_step=epoch)
 
     print('Epoch:', '%04d' % (epoch + 1), 'cost =', '{:.9f}'.format(avg_cost))
 
