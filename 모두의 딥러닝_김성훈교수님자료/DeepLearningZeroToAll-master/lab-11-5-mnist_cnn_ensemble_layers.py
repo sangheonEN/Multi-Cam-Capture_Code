@@ -105,6 +105,8 @@ for m in range(num_models):
 
 sess.run(tf.global_variables_initializer())
 
+saver = tf.train.Saver()
+
 print('Learning Started!')
 
 # train my model
@@ -118,6 +120,8 @@ for epoch in range(training_epochs):
         for m_idx, m in enumerate(models):
             c, _ = m.train(batch_xs, batch_ys)
             avg_cost_list[m_idx] += c / total_batch
+
+    saver.save(sess, "./tb/model.ckpt", global_step=epoch)
 
     print('Epoch:', '%04d' % (epoch + 1), 'cost =', avg_cost_list)
 
