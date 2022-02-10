@@ -1,0 +1,89 @@
+import datetime
+
+import cv2
+import threading
+import os
+
+base_path = os.path.dirname(os.path.abspath("__file__")) +'\\' #base path 경로 마지막 수정
+
+fourcc = cv2.VideoWriter_fourcc(*'XVID')
+record_flag = False
+
+class camThread(threading.Thread):
+    def __init__(self, previewName, camID):
+        threading.Thread.__init__(self)
+        self.previewName = previewName
+        self.camID = camID
+
+    def run(self):
+        print(f"Starting {self.previewName}")
+        camPreview(self.previewName, self.camID)
+
+
+def camPreview(previewName, camID):
+
+    global record_flag #전역변수
+
+    cv2.namedWindow(previewName)
+    cam = cv2.VideoCapture(camID)
+    video = -1 # videowriter 객체 담을 변수 미리선언
+
+    if cam.isOpened():
+        rval, frame = cam.read()
+    else:
+        rval = False
+
+    while rval:
+
+        rval, frame = cam.read()
+
+        cv2.imshow(previewName, frame)
+        key = cv2.waitKey(1)
+
+        now = datetime.datetime.now().strftime("%d_%H-%M-%S")
+
+
+        if(record_flag==True and video==-1): # 녹화설정 On, videowriter 객체 미 초기화 시에만(최초 파일생성)
+            save_record_path = base_path + previewName + '_' + str(now) + ".avi"
+            print(save_record_path)
+            video = cv2.VideoWriter(save_record_path, fourcc, 20.0,
+                                    (frame.shape[1], frame.shape[0]))
+
+        if key == 27: # ESC
+            break
+        elif key == 114 : # r
+            print("Start Record")
+            record_flag = True
+
+        elif key == 101 : # e
+            #end recode
+            print("End Record")
+            record_flag = False
+            if video!=-1:
+                video.release()
+        elif key == 99: # c
+            #capture
+            print("Capture")
+            save_capture_path = base_path + previewName + '_' + str(now) + ".png"
+            cv2.imwrite(save_capture_path, frame)
+
+        if record_flag == True :
+            print("Recording...")
+            if video!=-1:
+                video.write(frame)
+
+
+    cam.release()
+    cv2.destroyWindow(previewName)
+
+if __name__ == "__main__":
+    thread_1 = camThread("Cam 1", 0)
+    thread_2 = camThread("Cam 2", 1)
+    thread_3 = camThread("Cam 3", 2)
+
+    thread_1.start()
+    thread_2.start()
+    thread_3.start()
+
+    print("Active threads", threading.activeCount())
+
