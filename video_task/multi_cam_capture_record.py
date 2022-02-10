@@ -55,8 +55,11 @@ def camPreview(previewName, camID):
             #recode -> video parameters: save name, video format code, fps, (frame height, frame width)
             video = cv2.VideoWriter(os.path.join(base_path,previewName+"_"+str(now)+".avi"), fourcc, 10.0, (frame.shape[1], frame.shape[0]))
 
+        # video 객체에 영상이 저장된 정보가 있고 지금 record가 끝났으니 release()하여 file 저장하고 녹화를 중단한다.
+        # 그리고 다시 video를 -1로 초기화하여 다시 record가 on 상태일때 video가 초기화된 데이터로 input되게 -1로 초기화함.
         if (record == False and video != -1):
             video.release()
+            video = -1
 
         if key == 27: # ESC
             break
@@ -87,9 +90,9 @@ def camPreview(previewName, camID):
 
 if __name__ == "__main__":
     # 3개의 cam의 Thread 인스턴스를 생성한다.
-    thread_1 = camThread("Cam1", 0)
-    thread_2 = camThread("Cam2", 1)
-    thread_3 = camThread("Cam3", 2)
+    thread_1 = camThread("front", 0)
+    thread_2 = camThread("side", 1)
+    thread_3 = camThread("bottom", 2)
 
     # 생성된 스레드 인스턴스를 실행한다.
     """
