@@ -35,7 +35,13 @@ def camPreview(previewName, camID):
     global fourcc
 
     cv2.namedWindow(previewName)
-    cam = cv2.VideoCapture(camID)
+    # video의 Resolution을 변경할 수 있는 코드 작성 cv2.CAP
+    w = cv2.CAP_PROP_FRAME_WIDTH
+    h = cv2.CAP_PROP_FRAME_HEIGHT
+    cam = cv2.VideoCapture(camID, cv2.CAP_DSHOW)
+    cam.set(w, 960)
+    cam.set(h, 1280)
+
     video = -1 # 객체를 담을 수 있는 변수 선언(-1로 초기화한거임.)
     if cam.isOpened():
         rval, frame = cam.read()
